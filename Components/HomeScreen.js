@@ -5,7 +5,7 @@ import {useState, useEffect} from 'react';
 import { Button, View, Picker, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Input, Text } from 'react-native-elements'
+import { Input, Text,  } from 'react-native-elements'
 import DatePicker from 'react-native-datepicker'
 
 
@@ -34,6 +34,11 @@ const styles = StyleSheet.create({
 
 export default function HomeScreen({route, navigation }) {
 
+  //create refs
+  const input = React.createRef();
+  const input2 = React.createRef();
+
+  //configure state variables
   const [name, setName] = useState('');
   const [date, setDate] = useState('');
   const [food, setFood] = useState('');
@@ -41,60 +46,80 @@ export default function HomeScreen({route, navigation }) {
   const [foodErr, setFoodErr] = useState(false);
   const [dateErr, setDateErr] = useState(false);
 
+  let clearScreen = route.params.clearScreen
+
+  //clears screen info when clearScreen is updated
+  useEffect(() => {
+
+    if(clearScreen){
+
+     input.current.clear()
+     input2.current.clear()
+
+     setDate('')
+     setName('')
+     setFood('')
+
+     route.params.clearScreen = false;
+    }
+
+  }, [clearScreen])
+
+//returns View
   return (
     <View style={styles.container}>
-
       <View style={styles.form}>
-
+        {/*all inputs update state variables*/}
         <Text>Name:</Text>
         <Input
+            ref={input}
             placeholder="Please enter name"
             onChangeText={text => setName(text)}
             errorStyle={{ color: 'red' }}
             errorMessage= {error ? 'Please enter a name': ' '}
         />
-      <View style={styles.birthday}>
-        <Text style={{margin: 15}}>
-          DOB:
-        </Text>
-        <DatePicker
-          placeholder="select date"
-          format="YYYY-MM-DD"
-          date={date}
-          onDateChange={(date) => {setDate(date)}}
-          />
 
+        <View style={styles.birthday}>
+          <Text style={{margin: 15}}>
+            DOB:
+            </Text>
+            <DatePicker
+              placeholder="select date"
+              format="YYYY-MM-DD"
+              date={date}
+              onDateChange={(date) => {setDate(date)}}
+              />
+        </View>
 
-      </View>
-      <Text>What is your favorite food?</Text>
-      <Input
-        placeholder="Please enter food name"
-        onChangeText={text => setFood(text)}
-        errorStyle={{color: 'red'}}
-        errorMessage={foodErr ? 'Please enter a food': ''}/>
-      <Button
-        title="Go to Details"
-        color="green"
-        onPress={() => {
-
-          if(name === ''){
-            setError(true)
-          }else if(food === ''){
-            setFoodErr(true);
-          }else if(date === ''){
-            setDateErr(true);
-          }else{
-          navigation.navigate('Second', {
-          name: name,
-          food: food,
-          date: date
-        })
-      }}
-
+        <Text>What is your favorite food?</Text>
+        <Input
+          ref={input2}
+          placeholder="Please enter food name"
+          onChangeText={text => setFood(text)}
+          errorStyle={{color: 'red'}}
+          errorMessage={foodErr ? 'Please enter a food': ''}
+        />
+        {/* onPress function to ensure all fields are filled before navigating to next page */}
+        <Button
+          title="Go to Details"
+          color="green"
+          onPress={() => {
+            if(name === ''){
+              setError(true)
+            }else if(food === ''){
+              setFoodErr(true);
+            }else if(date === ''){
+              setDateErr(true);
+            }else{
+              navigation.navigate('Second', {
+                name: name,
+                food: food,
+                date: date,
+              })
+            }}
           }
       />
       </View>
-
     </View>
   );
 }

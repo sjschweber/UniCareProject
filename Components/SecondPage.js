@@ -10,13 +10,14 @@ import { Input, Text } from 'react-native-elements'
 
 export default function SecondPage({route, navigation}) {
 
+  //configure state variableas
   const [color, setColor] = useState('');
-  const [collegeYear, setCollegeYear] = useState('select');
+  const [collegeYear, setCollegeYear] = useState('');
   const [meal, setMeal] = useState('');
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>What is your favorite color?</Text>
       <Picker
           selectedValue={color}
@@ -32,7 +33,7 @@ export default function SecondPage({route, navigation}) {
         <Picker.Item label="Purple" value='purple'/>
       </Picker>
 
-      <Text>What is your favorite meal?</Text>
+      <Text>Which meal of the day is your favorite?</Text>
       <Picker
           selectedValue={meal}
           style={{ height: 50, width: 150 }}
@@ -46,7 +47,7 @@ export default function SecondPage({route, navigation}) {
         <Picker.Item label="Late Night" value='late night'/>
       </Picker>
 
-      <Text>What year are you in college?</Text>
+      <Text>Which year are you in college?</Text>
       <Picker
           selectedValue={collegeYear}
           style={{ height: 50, width: 150 }}
@@ -58,13 +59,13 @@ export default function SecondPage({route, navigation}) {
         <Picker.Item label="Junior" value='junior'/>
         <Picker.Item label='Senior' value='senior'/>
       </Picker>
-
+      {/*Ensures all fields are selected before navigating to next page*/}
       <Button
-        title="Next"
-        disabled={collegeYear==='0' || color==='0' || meal=='0'}
+        title="Go to Summary Screen"
+        color="pink"
+        disabled={collegeYear==='' || color==='' || meal===''}
         onPress={() => {
-
-          navigation.navigate('Details', {
+          navigation.navigate('UserInfo', {
             name: route.params.name,
             date: route.params.date,
             food: route.params.food,
@@ -74,7 +75,6 @@ export default function SecondPage({route, navigation}) {
           })
         }}
       />
-
     </View>
   );
 }
